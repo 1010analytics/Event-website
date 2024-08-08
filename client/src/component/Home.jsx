@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { AppBar, Toolbar, IconButton, Drawer, List, ListItem, ListItemText, Button } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import backgroundImg from '../images/backgroung.jpg';
-import { FaBars } from 'react-icons/fa';
+import LogoImg from '../images/logo 2.png';
 
 const HomePage = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -10,32 +14,68 @@ const HomePage = () => {
         setMenuOpen(!menuOpen);
     };
 
+    const closeMenu = () => {
+        setMenuOpen(false);
+    };
+
     return (
         <Container>
-            <Header>
+            <Header position="static">
                 <TopInfo>
                     <InfoItem>📞 +1 234 567 890</InfoItem>
                     <InfoItem>📧 contact@expocryptolink.com</InfoItem>
                     <InfoItem>🌍 www.expocryptolink.com</InfoItem>
                 </TopInfo>
-                <NavBar>
-                    <Logo>Expo Crypto Link</Logo>
-                    <Hamburger onClick={toggleMenu}>
-                        <FaBars />
-                    </Hamburger>
-                    <Nav menuOpen={menuOpen}>
+                <Toolbar>
+                    <Logo>
+                        <LogoImage src={LogoImg} alt="Expo Crypto Link Logo" />
+                        <LogoText>Expo Crypto Link</LogoText>
+                    </Logo>
+                    <NavDesktop>
                         <NavItem>Home</NavItem>
                         <NavItem>Speakers</NavItem>
                         <NavItem>Sponsors</NavItem>
                         <NavItem>Agenda</NavItem>
-                        <NavItem>Floor plan</NavItem>
-                    </Nav>
-                    <Buttons>
-                        <Button>Login</Button>
-                        <Button>Registration</Button>
-                    </Buttons>
-                </NavBar>
+                        <NavItem>Floor Plan</NavItem>
+                    </NavDesktop>
+                    <ButtonsDesktop>
+                        <StyledButton component={Link} to="/login" variant="contained" color="secondary">
+                            Login
+                        </StyledButton>
+                        <StyledButton component={Link} to="/registration" variant="contained" color="secondary">
+                            SignUp
+                        </StyledButton>
+                    </ButtonsDesktop>
+                    <MenuButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        onClick={toggleMenu}
+                    >
+                        <MenuIcon />
+                    </MenuButton>
+                </Toolbar>
             </Header>
+            <Drawer anchor="left" open={menuOpen} onClose={closeMenu}>
+                <DrawerContent>
+                    <CloseButton onClick={closeMenu}>
+                        <CloseIcon />
+                    </CloseButton>
+                    <List>
+                        {['Home', 'Speakers', 'Sponsors', 'Agenda', 'Floor Plan'].map((text) => (
+                            <ListItem button key={text} onClick={closeMenu}>
+                                <ListItemText primary={text} />
+                            </ListItem>
+                        ))}
+                        <ListItem button component={Link} to="/login" onClick={closeMenu}>
+                            <ListItemText primary="Login" />
+                        </ListItem>
+                        <ListItem button component={Link} to="/registration" onClick={closeMenu}>
+                            <ListItemText primary="Registration" />
+                        </ListItem>
+                    </List>
+                </DrawerContent>
+            </Drawer>
             <Main>
                 <EventDetails>
                     <EventTitle>25th of September, 2024 at 6:30 pm, Dubai, ATLANTIS, THE PALM</EventTitle>
@@ -49,7 +89,7 @@ const HomePage = () => {
                         <CountdownBox>
                             <Number>231</Number>
                         </CountdownBox>
-                        <Label>Day</Label>
+                        <Label>Days</Label>
                     </CountdownItem>
                     <CountdownItem>
                         <CountdownBox>
@@ -79,27 +119,22 @@ const Container = styled.div`
     background-image: url(${backgroundImg});
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    min-height: 100vh;
     color: #fff;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    @media (max-width: 768px) {
-        height: auto;
-    }
 `;
 
-const Header = styled.header`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+const Header = styled(AppBar)`
+    background-color: transparent !important;
+    box-shadow: none !important;
 `;
 
 const TopInfo = styled.div`
     display: flex;
     justify-content: center;
     background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
+    padding: 5px;
     @media (max-width: 768px) {
         flex-direction: column;
         align-items: center;
@@ -111,49 +146,38 @@ const InfoItem = styled.span`
     font-family: 'Rubik', sans-serif;
     font-size: 12px;
     @media (max-width: 768px) {
-        margin: 5px 0;
+        margin: 2px 0;
+        font-size: 10px;
     }
 `;
 
-const NavBar = styled.div`
+const Logo = styled.div`
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    width: 100%;
-    padding: 10px 50px;
-    background: rgba(0, 0, 0, 0.5);
+    flex-grow: 1;
+`;
+
+const LogoImage = styled.img`
+    height: 60px;
     @media (max-width: 768px) {
-        flex-direction: column;
-        padding: 10px 20px;
+        height: 40px;
     }
 `;
 
-const Logo = styled.h1`
-    font-family: 'Press Start 2P', cursive;
-    font-size: 24px;
-    color: #a051fc;
+const LogoText = styled.h1`
+    font-family: cursive;
+    font-size: 16px;
+    color: #ffff;
     @media (max-width: 768px) {
         font-size: 18px;
     }
 `;
 
-const Hamburger = styled.div`
-    display: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-    @media (max-width: 768px) {
-        display: block;
-    }
-`;
-
-const Nav = styled.nav`
+const NavDesktop = styled.nav`
     display: flex;
     align-items: center;
     @media (max-width: 768px) {
-        flex-direction: column;
-        margin-top: 10px;
-        display: ${({ menuOpen }) => (menuOpen ? 'flex' : 'none')};
+        display: none;
     }
 `;
 
@@ -161,33 +185,39 @@ const NavItem = styled.a`
     margin: 0 15px;
     cursor: pointer;
     font-family: 'Rubik', sans-serif;
-    color: #cc5fff;
-    @media (max-width: 768px) {
-        margin: 5px 0;
-    }
+    color: #ffffff;
 `;
 
-const Buttons = styled.div`
+const ButtonsDesktop = styled.div`
     display: flex;
     @media (max-width: 768px) {
-        flex-direction: column;
-        align-items: center;
-        margin-top: 10px;
+        display: none;
     }
 `;
 
-const Button = styled.button`
-    margin-left: 10px;
-    padding: 10px 20px;
-    background-color: #8e44ad;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-family: 'Rubik', sans-serif;
-    cursor: pointer;
+const StyledButton = styled(Button)`
+    margin-left: 10px !important;
+`;
+
+const MenuButton = styled(IconButton)`
+    display: none !important;
     @media (max-width: 768px) {
-        margin: 5px 0;
+        display: block !important;
     }
+`;
+
+const DrawerContent = styled.div`
+    width: 250px;
+    background-color: #000;
+    height: 100%;
+    color: #fff;
+`;
+
+const CloseButton = styled(IconButton)`
+    color: #fff !important;
+    position: absolute !important;
+    right: 10px !important;
+    top: 10px !important;
 `;
 
 const Main = styled.main`
@@ -195,7 +225,8 @@ const Main = styled.main`
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: 50px;
+    padding: 30px;
+    flex-grow: 1;
 `;
 
 const EventDetails = styled.div`
@@ -205,8 +236,7 @@ const EventDetails = styled.div`
     padding: 20px;
     border-radius: 10px;
     @media (max-width: 768px) {
-        margin: 20px;
-        padding: 10px;
+        padding: 15px;
     }
 `;
 
@@ -241,12 +271,10 @@ const EventDescription = styled.p`
 
 const Countdown = styled.div`
     display: flex;
-    justify-content: space-between;
-    width: 400px;
-    @media (max-width: 768px) {
-        flex-direction: column;
-        align-items: center;
-    }
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 600px;
 `;
 
 const CountdownItem = styled.div`
@@ -260,24 +288,19 @@ const CountdownBox = styled.div`
     background: white;
     padding: 10px;
     border-radius: 5px;
+    margin-bottom: 5px;
 `;
 
-const Number = styled.div`
+const Number = styled.span`
     font-family: 'Press Start 2P', cursive;
-    font-size: 32px;
-    color: #a051fc;
-    @media (max-width: 768px) {
-        font-size: 24px;
-    }
+    font-size: 24px;
+    color: black;
 `;
 
-const Label = styled.div`
+const Label = styled.span`
     font-family: 'Rubik', sans-serif;
-    font-size: 16px;
-    color: #cc5fff;
-    @media (max-width: 768px) {
-        font-size: 12px;
-    }
+    font-size: 14px;
+    color: #ffffff;
 `;
 
 export default HomePage;
